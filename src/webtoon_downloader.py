@@ -205,6 +205,8 @@ def get_chapters_details(session: requests.session, viewer_url: str, start_chapt
         for chapter_number, episode_details
         in enumerate(soup.find('div', class_='episode_cont').find_all('li'), start=1)]
 
+    print(chapter_details)
+
     return chapter_details[int(start_chapter or 1) - 1:end_chapter]
 
 def get_img_urls(session: requests.session, viewer_url: str, data_episode_num: int) -> list:
@@ -322,7 +324,7 @@ def download_chapter(chapter_download_task_id: int, session: requests.Session, v
         os.makedirs(dest)
     progress.update(chapter_download_task_id, total=len(img_urls), rendered_total=len(img_urls))
     progress.start_task(chapter_download_task_id)
-    with ThreadPoolExecutorWithQueueSizeLimit(maxsize=10, max_workers=4) as pool:
+    with ThreadPoolExecutorWithQueueSizeLimit(maxsize=10, max_workers=8) as pool:
         for page_number, url in enumerate(img_urls):
             pool.submit(download_image, chapter_download_task_id, url, dest, chapter_info.chapter_number, page_number, zeros, image_format=images_format)
             if done_event.is_set():
@@ -398,7 +400,11 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
         with ThreadPoolExecutor(max_workers=4) as pool:
             chapter_download_futures = set()
             for chapter_info in itertools.islice(chapters_to_download, n_concurrent_chapters_download):
-                    chapter_dest = os.path.join(dest, f"{chapter_info.chapter_number:0{zeros}d}") if separate_chapters else dest
+                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number} ({chapter_info.title})") if separate_chapters else dest
+
+                    if os.path.exists(chapter_dest):
+                        continue
+
                     chapter_download_task = progress.add_task(f"[plum2]Chapter {chapter_info.chapter_number}.",  type='Pages', type_color='grey85', number_format='>02d', start=False, rendered_total='??')
                     chapter_download_futures.add(
                         pool.submit(download_chapter, chapter_download_task, session, viewer_url, chapter_info, chapter_dest, zeros, images_format)
@@ -410,6 +416,8 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
                     chapter_download_futures, return_when=concurrent.futures.FIRST_COMPLETED
                 )
 
+                print(f"Downloading: Series: {series_title}  Chapter: {chapter_info}")
+
                 for _ in done:
                     progress.update(series_download_task, advance=1)
                     if done_event.is_set():
@@ -417,7 +425,7 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
 
                 # Scheduling the next set of futures.
                 for chapter_info in itertools.islice(chapters_to_download, len(done)):
-                    chapter_dest = os.path.join(dest, f"{chapter_info.chapter_number:0{zeros}d}") if separate_chapters else dest
+                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number} ({chapter_info.title})") if separate_chapters else dest
                     chapter_download_task = progress.add_task(f"[plum2]Chapter {chapter_info.chapter_number}.", type='Pages', type_color='grey85', number_format='>02d', start=False, rendered_total='??')
                     chapter_download_futures.add(
                         pool.submit(download_chapter, chapter_download_task, session, viewer_url, chapter_info, chapter_dest, zeros, images_format)
