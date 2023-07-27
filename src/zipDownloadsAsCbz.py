@@ -2,10 +2,18 @@ import os
 import zipfile
 
 
+def truncate_folder_name(folder_name):
+    # Find the index of the first opening parenthesis
+    index = folder_name.find('(')
+    if index != -1:
+        # Truncate the folder name before the opening parenthesis
+        folder_name = folder_name[:index].strip()
+    return folder_name
+
 
 def main():
     root_dir = r'E:/Manga/WebtoonDownloader'
-    output_dir = r'E:/Manga/WebtoonDownloaderZipped'
+    output_dir = r'E:/Manga/CustomDownloads'
 
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
@@ -22,8 +30,11 @@ def main():
             for subdir_name in os.listdir(dir_path):
                 subdir_path = os.path.join(dir_path, subdir_name)
                 if os.path.isdir(subdir_path):
+                    # Truncate the folder name
+                    truncated_name = truncate_folder_name(subdir_name)
+
                     # Create a zip file for each second level subdirectory within the corresponding output folder
-                    output_file = os.path.join(output_subdir, f'{subdir_name}.cbz')
+                    output_file = os.path.join(output_subdir, f'{truncated_name}.cbz')
                     if not os.path.exists(output_file):
                         with zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
                             # Add all files in the current second level subdirectory to the ZIP

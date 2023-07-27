@@ -386,6 +386,8 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
 
         start_chapter, end_chapter = chapters_to_download[0].chapter_number, chapters_to_download[-1].chapter_number
         n_chapters_to_download = end_chapter - start_chapter + 1
+        if start_chapter == end_chapter:
+            return
 
         if download_latest_chapter:
             progress.console.log(f"[plum2]Latest Chapter[/] -> [green]{end_chapter}[/]")
@@ -400,7 +402,7 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
         with ThreadPoolExecutor(max_workers=4) as pool:
             chapter_download_futures = set()
             for chapter_info in itertools.islice(chapters_to_download, n_concurrent_chapters_download):
-                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number} ({chapter_info.title})") if separate_chapters else dest
+                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number}") if separate_chapters else dest
 
                     if os.path.exists(chapter_dest):
                         continue
@@ -425,7 +427,7 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
 
                 # Scheduling the next set of futures.
                 for chapter_info in itertools.islice(chapters_to_download, len(done)):
-                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number} ({chapter_info.title})") if separate_chapters else dest
+                    chapter_dest = os.path.join(dest, f"Chapter {chapter_info.chapter_number}") if separate_chapters else dest
                     chapter_download_task = progress.add_task(f"[plum2]Chapter {chapter_info.chapter_number}.", type='Pages', type_color='grey85', number_format='>02d', start=False, rendered_total='??')
                     chapter_download_futures.add(
                         pool.submit(download_chapter, chapter_download_task, session, viewer_url, chapter_info, chapter_dest, zeros, images_format)
