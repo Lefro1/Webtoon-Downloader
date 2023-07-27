@@ -1,6 +1,6 @@
 import os
 import zipfile
-
+import concurrent.futures
 
 def truncate_folder_name(folder_name):
     # Find the index of the first opening parenthesis
@@ -10,6 +10,14 @@ def truncate_folder_name(folder_name):
         folder_name = folder_name[:index].strip()
     return folder_name
 
+def zip_folder(subdir_path, output_file):
+    with zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        # Add all files in the current second level subdirectory to the ZIP
+        for root, _, files in os.walk(subdir_path):
+            print(f"Zipping {subdir_path}")
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, os.path.relpath(file_path, subdir_path))
 
 def main():
     root_dir = r'E:/Manga/WebtoonDownloader'
@@ -36,14 +44,8 @@ def main():
                     # Create a zip file for each second level subdirectory within the corresponding output folder
                     output_file = os.path.join(output_subdir, f'{truncated_name}.cbz')
                     if not os.path.exists(output_file):
-                        with zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
-                            # Add all files in the current second level subdirectory to the ZIP
-                            for root, _, files in os.walk(subdir_path):
-                                print(f"Zipping {subdir_path}")
-                                for file in files:
-                                    file_path = os.path.join(root, file)
-                                    zipf.write(file_path, os.path.relpath(file_path, subdir_path))
-
+                        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
+                            executor.submit(zip_folder, subdir_path, output_file)
 
 if __name__ == '__main__':
     main()
