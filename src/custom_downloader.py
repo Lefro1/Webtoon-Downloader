@@ -26,13 +26,21 @@ def get_subscription_map():
 
     return series_name_to_url
 
-
+def series_name_exists_in_daily_pass(series_name, daily_pass_file):
+    # Read the data from daily_pass.txt
+    with open(daily_pass_file, 'r') as file:
+        for line in file:
+            if series_name.lower() == line.strip().lower():
+                return True
+    return False
 
 # Allows for downloading multiple entries in series as opposed to the standard CLI approach
 def main():
     for(title, url, path) in get_subscription_map():
-        print(title, url, path)
+        if series_name_exists_in_daily_pass(title, 'helpers/daily_pass.txt'):
+            continue
 
+        print(title, url, path)
         fullPath = f"E:/Manga/WebtoonDownloader/{title}"
         if not os.path.exists(fullPath):
             os.makedirs(fullPath)

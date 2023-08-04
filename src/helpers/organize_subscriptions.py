@@ -21,7 +21,6 @@ def read_subscriptions():
 
             # Remove any illegal characters from series_name and url
             series_name = sanitize_filename(series_name.strip())
-            url = sanitize_filename(url.strip())
 
             subscriptions.append((series_name, url))
 
