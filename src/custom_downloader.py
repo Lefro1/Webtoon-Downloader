@@ -5,33 +5,32 @@ import os
 from subprocess import call
 import cmd
 
-series_name_to_url = [
-    ('Death Rescheduled', 'https://www.webtoons.com/en/thriller/death-rescheduled/list?title_no=3515', 'E:/Manga/WebtoonDownloader'),
-    ("Lets Play", 'https://www.webtoons.com/en/romance/letsplay/list?title_no=1218', 'E:/Manga/WebtoonDownloader'),
-    ('Anomaly Soul', 'https://www.webtoons.com/en/challenge/anomaly-soul-season-1/list?title_no=526690', 'E:/Manga/WebtoonDownloader'),
-    ('Everything is Fine', 'https://www.webtoons.com/en/horror/everything-is-fine/list?title_no=2578', 'E:/Manga/WebtoonDownloader'),
-    ('Down to Earth', 'https://www.webtoons.com/en/romance/down-to-earth/list?title_no=1817', 'E:/Manga/WebtoonDownloader'),
-    ('Hand Jumper', 'https://www.webtoons.com/en/thriller/hand-jumper/list?title_no=2702', 'E:/Manga/WebtoonDownloader'),
-    ('Immortal Weakling', 'https://www.webtoons.com/en/super-hero/immortal-weakling/list?title_no=2733', 'E:/Manga/WebtoonDownloader'),
-    ('Meme Girls', 'https://www.webtoons.com/en/challenge/meme-girls/list?title_no=304446', 'E:/Manga/WebtoonDownloader'),
-    ('Maybe Meant to Be', 'https://www.webtoons.com/en/romance/maybe-meant-to-be/list?title_no=4208', 'E:/Manga/WebtoonDownloader'),
-    ("Im The Grim Reaper", 'https://www.webtoons.com/en/supernatural/im-the-grim-reaper/list?title_no=1697', 'E:/Manga/WebtoonDownloader'),
-    ('Not Even Bones', 'https://www.webtoons.com/en/thriller/not-even-bones/list?title_no=1756', 'E:/Manga/WebtoonDownloader'),
-    ('Questism', 'https://www.webtoons.com/en/fantasy/questism/list?title_no=3767', 'E:/Manga/WebtoonDownloader'),
-    ('I Was The Final Boss', 'https://www.webtoons.com/en/fantasy/i-was-the-final-boss/list?title_no=5170', 'E:/Manga/WebtoonDownloader'),
-    ('Absolute Sword Sense', 'https://www.webtoons.com/en/action/absolute-sword-sense/list?title_no=5100', 'E:/Manga/WebtoonDownloader'),
-    ('Bailin and Li Yun', 'https://www.webtoons.com/en/challenge/bailin-and-li-yun/list?title_no=781556', 'E:/Manga/WebtoonDownloader'),
-    ('The Last Bloodline', 'https://www.webtoons.com/en/supernatural/the-last-bloodline/list?title_no=2722', 'E:/Manga/WebtoonDownloader'),
-    ('Karsearin Adventures of a Red Dragon', 'https://www.webtoons.com/en/fantasy/karsearin-adventures-of-a-red-dragon/list?title_no=4447', 'E:/Manga/WebtoonDownloader'),
-    ('Suitor Armor', 'https://www.webtoons.com/en/fantasy/suitor-armor/list?title_no=2159', 'E:/Manga/WebtoonDownloader'),
-    ('Mage & Demon Queen', 'https://www.webtoons.com/en/comedy/mage-and-demon-queen/list?title_no=1438', 'E:/Manga/WebtoonDownloader'),
-    ('The Ember Knight', 'https://www.webtoons.com/en/fantasy/the-ember-knight/list?title_no=2886', 'E:/Manga/WebtoonDownloader'),
-    # ('Taming the Marquess', 'https://www.webtoons.com/en/romance/taming-the-marquess/list?title_no=4345') Does not work as it is pass-based
-]
+"""
+This function reads data from subscriptions.txt and generates a list of tuples containing series names, URLs, and a common file path.
+
+Returns:
+    list: A list of tuples, where each tuple contains (series_name, url, file_path).
+"""
+def get_subscription_map():
+    subscriptions_file = "helpers/subscriptions.txt"
+    file_path = 'E:/Manga/WebtoonDownloader'
+
+    # Initialize an empty list to store the generated series_name_to_url list
+    series_name_to_url = []
+
+    # Read the data from subscriptions.txt and generate the list
+    with open(subscriptions_file, 'r') as file:
+        for line in file:
+            series_name, url = line.strip().split('|')
+            series_name_to_url.append((series_name.strip(), url.strip(), file_path))
+
+    return series_name_to_url
+
+
 
 # Allows for downloading multiple entries in series as opposed to the standard CLI approach
 def main():
-    for(title, url, path) in series_name_to_url:
+    for(title, url, path) in get_subscription_map():
         print(title, url, path)
 
         fullPath = f"E:/Manga/WebtoonDownloader/{title}"
