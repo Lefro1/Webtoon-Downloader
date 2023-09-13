@@ -1,11 +1,19 @@
 import re
 
+
 def sanitize_filename(filename):
     # Define a regex pattern to match any illegal characters in filenames
     illegal_chars = r'[<>:"/\\|?*]'
+    replacement_chars = {'’': '\'',
+                         'â€™': '\''
+                        }
+
+    for illegal_char in replacement_chars:
+        filename = re.sub(illegal_char, replacement_chars[illegal_char], filename)
 
     # Remove any illegal characters from the filename
     return re.sub(illegal_chars, '', filename)
+
 
 def read_subscriptions():
     subscriptions_file = "subscriptions.txt"
