@@ -6,7 +6,7 @@ def sanitize_filename(filename):
     illegal_chars = r'[<>:"/\\|?*]'
     replacement_chars = {'’': '\'',
                          'â€™': '\''
-                        }
+                         }
 
     for illegal_char in replacement_chars:
         filename = re.sub(illegal_char, replacement_chars[illegal_char], filename)
@@ -15,14 +15,12 @@ def sanitize_filename(filename):
     return re.sub(illegal_chars, '', filename)
 
 
-def read_subscriptions():
-    subscriptions_file = "subscriptions.txt"
-
+def read_and_sort_file(file_name):
     # Initialize an empty list to store the subscriptions
     subscriptions = []
 
     # Read the data from subscriptions.txt
-    with open(subscriptions_file, 'r') as file:
+    with open(file_name, 'r') as file:
         for line in file:
             # Split the line by '|' to get the series name and URL
             series_name, url = line.strip().split('|')
@@ -38,22 +36,32 @@ def read_subscriptions():
     return sorted_subscriptions
 
 
-def write_subscriptions(sorted_subscriptions):
-    subscriptions_file = "subscriptions.txt"
-
-    # Write the sorted subscriptions back to subscriptions.txt
-    with open(subscriptions_file, 'w') as file:
+def organize_file(sorted_subscriptions, file_name):
+    # Write the sorted subscriptions back to the target file
+    with open(file_name, 'w') as file:
         for series_name, url in sorted_subscriptions:
             file.write(f"{series_name}|{url}\n")
 
 
-# Read the subscriptions, sort them, and write back to the file
-sorted_subscriptions = read_subscriptions()
-write_subscriptions(sorted_subscriptions)
+def combine_files(file_1, file_2, destination):
+    with open(file_1, 'r') as file1, open(file_2, 'r') as file2:
+        contents1 = file1.read()
+        contents2 = file2.read()
+
+    combined_contents = contents1 + contents2
+
+    with open(destination, 'w') as dest_file:
+        dest_file.write(combined_contents)
 
 
 def main():
-    write_subscriptions(read_subscriptions())
+    subscriptions = "subscriptions.txt"
+    additional = "additional_downloads.txt"
+    all_downloads = "all_downloads.txt"
+
+    organize_file(read_and_sort_file(subscriptions), subscriptions)
+    organize_file(read_and_sort_file(additional), additional)
+    combine_files(subscriptions, additional, all_downloads)
 
 
 if __name__ == '__main__':

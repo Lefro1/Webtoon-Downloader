@@ -6,19 +6,19 @@ from subprocess import call
 import cmd
 
 """
-This function reads data from subscriptions.txt and generates a list of tuples containing series names, URLs, and a common file path.
+This function reads data from all_downloads.txt and generates a list of tuples containing series names, URLs, and a common file path.
 
 Returns:
     list: A list of tuples, where each tuple contains (series_name, url, file_path).
 """
 def get_subscription_map():
-    subscriptions_file = "helpers/subscriptions.txt"
+    subscriptions_file = "helpers/all_downloads.txt"
     file_path = 'E:/Manga/WebtoonDownloader'
 
     # Initialize an empty list to store the generated series_name_to_url list
     series_name_to_url = []
 
-    # Read the data from subscriptions.txt and generate the list
+    # Read the data from all_downloads.txt and generate the list
     with open(subscriptions_file, 'r') as file:
         for line in file:
             series_name, url = line.strip().split('|')
