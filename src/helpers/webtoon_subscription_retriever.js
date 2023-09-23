@@ -1,5 +1,4 @@
-// Initialize an empty map to store the series names and URLs
-const seriesMap = new Map();
+const seriesList = [];
 
 // Get all entries in the unordered lists
 const originals = document.querySelectorAll('#_webtoonList li');
@@ -16,11 +15,10 @@ for (const listItem of allEntries) {
   // Extract the reference URL
   const referenceURL = listItem.querySelector('a.card_item').getAttribute('href');
 
-  // Add the series name and URL to the map
-  seriesMap.set(seriesName, referenceURL);
+  // Create the formatted entry and push it to the list
+  const formattedEntry = `${seriesName}|${referenceURL}`;
+  seriesList.push(formattedEntry);
 }
 
-// Print the entries in CSV format
-for (const [seriesName, referenceURL] of seriesMap) {
-  console.log(`${seriesName}|${referenceURL}`);
-}
+// Print the entries in a single column
+console.log(seriesList.join('\n'));
