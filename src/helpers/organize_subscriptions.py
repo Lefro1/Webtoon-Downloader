@@ -18,7 +18,8 @@ def sanitize_filename(filename):
     illegal_chars = r'[<>:"/\\|?*]'
     replacement_chars = {'’': '\'',
                          'â€™': '\'',
-                         'ñ': 'n'
+                         'ñ': 'n',
+                         'Ã±': 'n'
                          }
 
     for illegal_char in replacement_chars:
