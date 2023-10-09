@@ -1,15 +1,30 @@
 import re
 
 
+def replace_filename(filename):
+    replacement_names = {
+        'Housekeeper': 'Housekeeper_Webtoon'
+    }
+
+    for name in replacement_names:
+        if filename == name:
+            filename = re.sub(name, replacement_names[name], filename)
+
+    return filename
+
+
 def sanitize_filename(filename):
     # Define a regex pattern to match any illegal characters in filenames
     illegal_chars = r'[<>:"/\\|?*]'
     replacement_chars = {'’': '\'',
-                         'â€™': '\''
+                         'â€™': '\'',
+                         'ñ': 'n'
                          }
 
     for illegal_char in replacement_chars:
         filename = re.sub(illegal_char, replacement_chars[illegal_char], filename)
+
+    filename = replace_filename(filename)
 
     # Remove any illegal characters from the filename
     return re.sub(illegal_chars, '', filename)
