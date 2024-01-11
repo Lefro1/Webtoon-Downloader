@@ -126,6 +126,25 @@ def remove_duplicates(file_name):
         out.write(line)
 
 
+def organize_by_popularity(file_name):
+    with open(file_name, 'r') as file:
+        lines = file.readlines()
+
+    # Find and remove the header line. Without this, it will try to parse it as a normal entry (and fail to compare string to int)
+    for line in lines:
+        if line.startswith("title|author|likes|url"):
+            lines.remove(line)
+            break
+
+    # Parse the data and sort by the 2nd value (likes) and then by the 0th value (title)
+    sorted_lines = sorted(lines, key=lambda x: (int(x.split('|')[2]), x.split('|')[0]), reverse=True)
+
+    # Write the sorted data back to the file with the header
+    with open(file_name, 'w') as file:
+        file.write("title|author|likes|url\n")
+        file.writelines(sorted_lines)
+
+
 def main():
     subscriptions = "subscriptions.txt"
     additional = "additional_downloads.txt"
@@ -140,6 +159,11 @@ def main():
     organize_daily_pass(daily_pass)
     combine_files(subscriptions, additional, all_downloads)
     remove_entries(all_downloads, daily_pass)
+
+    # Organize the metadata contents
+    webtoon_metadata = "../webtoon_js_grabbers/webtoon_metadata.txt"
+    remove_duplicates(webtoon_metadata)
+    organize_by_popularity(webtoon_metadata)
 
 
 if __name__ == '__main__':
