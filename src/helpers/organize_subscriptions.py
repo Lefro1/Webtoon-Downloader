@@ -58,6 +58,7 @@ def organize_file(sorted_subscriptions, file_name):
         for series_name, url in sorted_subscriptions:
             file.write(f"{series_name}|{url}\n")
 
+
 def organize_daily_pass(file_path):
     """
     Daily pass definition is different because it does not user the | delimiter.
@@ -112,14 +113,30 @@ def remove_entries(main_file, removal_file):
             file1.write(f"{series_name}|{url}\n")
 
 
+'''
+This needs to be run PRIOR to sorting. This randomizes the line locations but removes duplicates
+'''
+
+
+def remove_duplicates(file_name):
+    lines = open(file_name, 'r').readlines()
+    lines_set = set(lines)
+    out = open(file_name, 'w')
+    for line in lines_set:
+        out.write(line)
+
+
 def main():
     subscriptions = "subscriptions.txt"
     additional = "additional_downloads.txt"
-    all_downloads = "all_downloads.txt"
     daily_pass = "daily_pass.txt"
+    webtoon_homepage = "webtoon_homepage.txt"
+    all_downloads = "all_downloads.txt"
 
     organize_file(read_and_sort_file(subscriptions), subscriptions)
     organize_file(read_and_sort_file(additional), additional)
+    remove_duplicates(webtoon_homepage)
+    organize_file(read_and_sort_file(webtoon_homepage), webtoon_homepage)
     organize_daily_pass(daily_pass)
     combine_files(subscriptions, additional, all_downloads)
     remove_entries(all_downloads, daily_pass)
