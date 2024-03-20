@@ -148,7 +148,7 @@ def organize_by_popularity(file_name):
 def main():
     subscriptions = "subscriptions.txt"
     additional = "additional_downloads.txt"
-    daily_pass = "daily_pass.txt"
+    daily_pass = "skip.txt"
     webtoon_homepage = "webtoon_homepage.txt"
     all_downloads = "all_downloads.txt"
 

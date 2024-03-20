@@ -11,5 +11,5 @@ def organize_file(file_path):
         file.write("\n".join(sorted_titles))
 
 if __name__ == "__main__":
-    file_path = "daily_pass.txt"
+    file_path = "skip.txt"
     organize_file(file_path)
