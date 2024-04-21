@@ -134,6 +134,8 @@ def get_series_title(series_url, html: Union[str, BeautifulSoup]) -> str:
     ----------
     (str): The full title of the series.
     """
+
+    # TODO: Fix to not break on Canvas
     if 'challenge' in series_url.lower().split('/'):
         title_html_element = 'h3'
     else:
