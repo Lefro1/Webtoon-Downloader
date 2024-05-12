@@ -34,6 +34,31 @@ def series_name_exists_in_daily_pass(series_name, daily_pass_file):
                 return True
     return False
 
+
+def find_starting_chapter(fullPath):
+    chapter_numbers = []
+
+    for dirName in os.listdir(fullPath):
+        try:
+            chapter_num = int(dirName.split("Chapter ", 1)[1].split()[0])
+            chapter_numbers.append(chapter_num)
+        except (IndexError, ValueError):
+            # Skip if chapter number extraction fails
+            pass
+
+    chapter_numbers.sort()
+
+    missing_chapter = None
+    for i in range(len(chapter_numbers) - 1):
+        if chapter_numbers[i + 1] - chapter_numbers[i] != 1:
+            missing_chapter = chapter_numbers[i] + 1
+            break
+
+    if missing_chapter is None:
+        return chapter_numbers[-1] if chapter_numbers else 0
+    else:
+        return missing_chapter
+
 # Allows for downloading multiple entries in series as opposed to the standard CLI approach
 def main():
     for(title, url, path) in get_subscription_map():
@@ -41,16 +66,13 @@ def main():
             continue
 
         print(title, url, path)
-        fullPath = f"E:/Manga/WebtoonDownloader/{title}"
-        if not os.path.exists(fullPath):
-            os.makedirs(fullPath)
+        full_path = f"E:/Manga/WebtoonDownloader/{title}"
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
 
-        finalChapter = 0
-        for dirName in os.listdir(fullPath):
-            currChapter = dirName.split("Chapter ",1)[1].split()[0]
-            finalChapter = max(finalChapter, int(currChapter))
+        download_starting_chapter = find_starting_chapter(full_path)
 
-        command_args = f' {url} --images-format png --separate --dest "{fullPath}" --start {finalChapter}'
+        command_args = f' {url} --images-format png --separate --dest "{full_path}" --start {download_starting_chapter}'
 
         script_call_start = "python webtoon_downloader.py"
         script_call = script_call_start + command_args
