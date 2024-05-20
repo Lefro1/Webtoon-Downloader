@@ -21,7 +21,7 @@ def zip_folder(subdir_path, output_file):
 
 def main():
     root_dir = r'E:/Manga/WebtoonDownloader'
-    output_dir = r'E:/Manga/CustomDownloads'
+    output_dir = r'E:/Manga/WebtoonDownloader_Zipped'
 
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
