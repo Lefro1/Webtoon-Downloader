@@ -366,7 +366,7 @@ def download_webtoon(series_url: str, start_chapter: int, end_chapter: int, dest
     session.cookies.set("needGDPR", "FALSE", domain=".webtoons.com")
     session.cookies.set("needCCPA", "FALSE", domain=".webtoons.com")
     session.cookies.set("needCOPPA", "FALSE", domain=".webtoons.com")
-    r = session.get(f'{series_url}', headers=headers)
+    r = session.get(f'{series_url}', headers=headers, timeout=10)
     soup = BeautifulSoup(r.text, 'lxml')
     viewer_url = get_chapter_viewer_url(soup)
     series_title = get_series_title(series_url, soup)
