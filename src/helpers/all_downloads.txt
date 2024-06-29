@@ -27,7 +27,6 @@ Immortal Weakling|https://www.webtoons.com/en/super-hero/immortal-weakling/list?
 Jungle Juice|https://www.webtoons.com/en/action/jungle-juice/list?title_no=2480
 Karsearin Adventures of a Red Dragon|https://www.webtoons.com/en/fantasy/karsearin-adventures-of-a-red-dragon/list?title_no=4447
 Kill the Dragon|https://www.webtoons.com/en/action/kill-the-dragon/list?title_no=4583
-Let's Play|https://www.webtoons.com/en/romance/letsplay/list?title_no=1218
 Life of a Quack Healer|https://www.webtoons.com/en/fantasy/life-of-a-quack-healer/list?title_no=5557
 Like Wind on a Dry Branch|https://www.webtoons.com/en/fantasy/like-wind-on-a-dry-branch/list?title_no=2405
 Limit Breaker|https://www.webtoons.com/en/action/limit-breaker/list?title_no=4176
@@ -94,7 +93,6 @@ unOrdinary|https://www.webtoons.com/en/super-hero/unordinary/list?title_no=679
 +99 Reinforced Wooden Stick|https://www.webtoons.com/en/comedy/99-reinforced-wooden-stick/list?title_no=4286
 A Man's Man|https://www.webtoons.com/en/drama/a-mans-man/list?title_no=2876
 Acception|https://www.webtoons.com/en/drama/acception/list?title_no=1513
-Act Like You Love Me!|https://www.webtoons.com/en/romance/act-like-you-love-me/list?title_no=2521
 Adventures of God|https://www.webtoons.com/en/comedy/adventures-of-god/list?title_no=853
 After Dark|https://www.webtoons.com/en/horror/after-dark/list?title_no=5110
 After School Lessons for Unripe Apples|https://www.webtoons.com/en/drama/after-school-lessons-for-unripe-apples/list?title_no=3093
@@ -191,9 +189,8 @@ Of Dark Lords and Cabbages|https://www.webtoons.com/en/romance/of-dark-lords-and
 Of Swamp & Sea|https://www.webtoons.com/en/supernatural/of-swamp-and-sea/list?title_no=2736
 Operation True Love|https://www.webtoons.com/en/romance/operation-true-love/list?title_no=4465
 Ordeal|https://www.webtoons.com/en/action/ordeal/list?title_no=2729
-Parallel City|https://www.webtoons.com/en/mystery/parallelcity/list?title_no=2053
 Phase|https://www.webtoons.com/en/romance/phase/list?title_no=2117
-Philia Rosé The Prophecy of the Crown of Thorns|https://www.webtoons.com/en/fantasy/philia-rose-the-prophecy-of-the-crown-of-thorns/list?title_no=3900
+Philia Rose The Prophecy of the Crown of Thorns|https://www.webtoons.com/en/fantasy/philia-rose-the-prophecy-of-the-crown-of-thorns/list?title_no=3900
 Purple Hyacinth|https://www.webtoons.com/en/mystery/purple-hyacinth/list?title_no=1621
 Random Chat|https://www.webtoons.com/en/drama/random-chat/list?title_no=1669
 Raven Saga|https://www.webtoons.com/en/fantasy/raven-saga/list?title_no=2527
