@@ -160,6 +160,7 @@ def main():
     organize_file(read_and_sort_file(webtoon_homepage), webtoon_homepage)
     organize_daily_pass(daily_pass)
     combine_files(subscriptions, additional, all_downloads)
+    combine_files(all_downloads, webtoon_homepage, all_downloads)
     remove_entries(all_downloads, daily_pass)
 
     # Organize the metadata contents
