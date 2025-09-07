@@ -1,51 +1,71 @@
 import os
 import zipfile
 import concurrent.futures
+from concurrent.futures import as_completed
 
-def truncate_folder_name(folder_name):
-    # Find the index of the first opening parenthesis
-    index = folder_name.find('(')
-    if index != -1:
-        # Truncate the folder name before the opening parenthesis
-        folder_name = folder_name[:index].strip()
-    return folder_name
+MAX_WORKERS = 8
+ROOT_DIR = r'E:/Manga/WebtoonDownloader'
+OUTPUT_DIR = r'E:/Manga/WebtoonDownloader_Zipped'
 
-def zip_folder(subdir_path, output_file):
-    with zipfile.ZipFile(output_file, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        # Add all files in the current second level subdirectory to the ZIP
-        for root, _, files in os.walk(subdir_path):
-            print(f"Zipping {subdir_path}")
-            for file in files:
-                file_path = os.path.join(root, file)
-                zipf.write(file_path, os.path.relpath(file_path, subdir_path))
+def truncate_folder_name(folder_name: str) -> str:
+    idx = folder_name.find('(')
+    return folder_name[:idx].strip() if idx != -1 else folder_name
+
+def zip_folder(subdir_path: str, output_file: str) -> str:
+    # Return a status string so we can print from the main thread
+    try:
+        # Make sure parent dir exists (in case call site races on creation)
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+
+        with zipfile.ZipFile(output_file, mode='w', compression=zipfile.ZIP_DEFLATED) as zipf:
+            for root, _, files in os.walk(subdir_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, subdir_path)
+                    zipf.write(file_path, arcname)
+        return f"OK  | {subdir_path} -> {output_file}"
+    except Exception as e:
+        # If something failed, try to remove a partial file
+        try:
+            if os.path.exists(output_file):
+                os.remove(output_file)
+        except Exception:
+            pass
+        return f"ERR | {subdir_path}: {e!r}"
 
 def main():
-    root_dir = r'E:/Manga/WebtoonDownloader'
-    output_dir = r'E:/Manga/WebtoonDownloader_Zipped'
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    futures = []
 
-    # Create the output directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        for series_name in os.listdir(ROOT_DIR):
+            series_path = os.path.join(ROOT_DIR, series_name)
+            if not os.path.isdir(series_path):
+                continue
 
-    # Iterate over the first level subdirectories
-    for dir_name in os.listdir(root_dir):
-        dir_path = os.path.join(root_dir, dir_name)
-        if os.path.isdir(dir_path):
-            # Create a separate folder for each first level subdirectory within the output directory
-            output_subdir = os.path.join(output_dir, dir_name)
-            os.makedirs(output_subdir, exist_ok=True)
+            # Each series has its own output subdir
+            series_out = os.path.join(OUTPUT_DIR, series_name)
+            os.makedirs(series_out, exist_ok=True)
 
-            # Iterate over the second level subdirectories
-            for subdir_name in os.listdir(dir_path):
-                subdir_path = os.path.join(dir_path, subdir_name)
-                if os.path.isdir(subdir_path):
-                    # Truncate the folder name
-                    truncated_name = truncate_folder_name(subdir_name)
+            for chapter_name in os.listdir(series_path):
+                chapter_path = os.path.join(series_path, chapter_name)
+                if not os.path.isdir(chapter_path):
+                    continue
 
-                    # Create a zip file for each second level subdirectory within the corresponding output folder
-                    output_file = os.path.join(output_subdir, f'{truncated_name}.cbz')
-                    if not os.path.exists(output_file):
-                        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
-                            executor.submit(zip_folder, subdir_path, output_file)
+                truncated = truncate_folder_name(chapter_name)
+                output_file = os.path.join(series_out, f"{truncated}.cbz")
+
+                if os.path.exists(output_file):
+                    continue
+
+                # Submit this chapter to the shared pool
+                futures.append(executor.submit(zip_folder, chapter_path, output_file))
+
+        # Report results as they complete
+        for fut in as_completed(futures):
+            print(fut.result())
+
+    print(f"Done. Submitted {len(futures)} chapter(s).")
 
 if __name__ == '__main__':
     main()
