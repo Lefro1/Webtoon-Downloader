@@ -134,16 +134,16 @@ def organize_by_popularity(file_name):
 
     # Find and remove the header line. Without this, it will try to parse it as a normal entry (and fail to compare string to int)
     for line in lines:
-        if line.startswith("title|author|likes|url"):
+        if line.startswith("title|likes|url"):
             lines.remove(line)
             break
 
     # Parse the data and sort by the 2nd value (likes) and then by the 0th value (title)
-    sorted_lines = sorted(lines, key=lambda x: (int(x.split('|')[2]), x.split('|')[0]), reverse=True)
+    sorted_lines = sorted(lines, key=lambda x: (int(x.split('|')[1]), x.split('|')[0]), reverse=True)
 
     # Write the sorted data back to the file with the header
     with open(file_name, 'w') as file:
-        file.write("title|author|likes|url\n")
+        file.write("title|likes|url\n")
         file.writelines(sorted_lines)
 
 
