@@ -11,7 +11,8 @@ def truncate_folder_name(folder_name: str) -> str:
     idx = folder_name.find('(')
     return folder_name[:idx].strip() if idx != -1 else folder_name
 
-def zip_folder(subdir_path: str, output_file: str) -> str:
+def zip_folder(series_name: str, chapter_name: str, subdir_path: str, output_file: str) -> str:
+    print(f"Zipping | {series_name} / {chapter_name}")
     try:
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         with zipfile.ZipFile(output_file, mode='w', compression=zipfile.ZIP_DEFLATED) as zipf:
@@ -20,14 +21,14 @@ def zip_folder(subdir_path: str, output_file: str) -> str:
                     file_path = os.path.join(root, file)
                     arcname = os.path.relpath(file_path, subdir_path)
                     zipf.write(file_path, arcname)
-        return f"OK  | {output_file}"
+        return f"DONE | {series_name} / {chapter_name} -> {output_file}"
     except Exception as e:
         try:
             if os.path.exists(output_file):
                 os.remove(output_file)
         except Exception:
             pass
-        return f"ERR | {subdir_path}: {e!r}"
+        return f"ERR  | {series_name} / {chapter_name}: {e!r}"
 
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -53,9 +54,14 @@ def main():
                 if os.path.exists(output_file):
                     continue
 
-                # Only print when we start a new chapter
-                print(f"Zipping {series_name} / {chapter_name}")
-                futures.append(executor.submit(zip_folder, chapter_path, output_file))
+                fut = executor.submit(
+                    zip_folder,
+                    series_name,
+                    chapter_name,
+                    chapter_path,
+                    output_file,
+                )
+                futures.append(fut)
 
         for fut in as_completed(futures):
             print(fut.result())
